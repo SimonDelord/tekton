@@ -1,0 +1,2 @@
+Those YAML files are the various Tasks that get imported into the OCP cluster 
+via ACM (e.g using ACM as a tool to provide access to developers to various Tekton components)
