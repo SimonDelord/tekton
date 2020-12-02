@@ -1,0 +1,34 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: git-copy-triggertemplate
+spec:
+  params:  
+  - name: gitrepositoryname
+    description: The name of the deployment to be created / patched
+  resourcetemplates:    
+  - apiVersion: tekton.dev/v1alpha1
+    kind: PipelineRun
+    metadata:
+      generateName: copy-git-repo-from-$(params.gitrepositoryname)-
+    spec:
+      pipelineRef:
+        name: copy-git-repo-pipeline2
+      workspaces: 
+      - name: source
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 100Mi
+      - name: input
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 100Mi
+  

@@ -1,0 +1,8 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: git-copy-triggerbinding
+spec:
+  params:
+  - name: gitrepositoryname
+    value: $(body.repository.name)
