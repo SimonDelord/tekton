@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: create-a-webhook-git-dev-repo
+spec:
+  steps:
+    - name: echo
+      image: fedora
+      script: |
+        #!/usr/bin/env bash
+        curl -u 'simonDelordtest:30ab01a4f8c6c726199579a686df7e5f36989172' -H "Content-Type: application/json" -X POST -d '{"config":{"url":"http://git-dev-app1-listener-default.apps.ocpbare.melbourneocp.net", "content_type":"json"}}' https://api.github.com/repos/simonDelordtest/dev-repo-app1/hooks
+
