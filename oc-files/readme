@@ -1,0 +1,7 @@
+These are the "template files" used by the openshift-client Task for:
+  - Linking the dev-git-repo to the OCP Dev/Hub cluster
+  - Linking the prod-git-repo to the OCP Prod cluster
+  - Create an eventListener on the relevant OCP cluster 
+    to initiate a pipelineRun for the second pipeline. Please note that this eventListener is setup in task 3 of the initial pipelineRun
+
+
