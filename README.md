@@ -2,32 +2,34 @@
 This is my github repo for all Tekton related activities.\
 I am going to try to integrate some of the ACM functions with Tekton and see how they can be used together.\
 
-The environment is the following\
+The environment is the following:
+   - one OCP cluster used as a Hub/Dev environment.
+   - one OCP cluster used as a Prod environment.
 
-one OCP cluster used as a Hub/Dev environment.\
-one OCP cluster used as a Prod environment.\
+ACM is being used as a way of deploying:
+triggers and pipelines to any cluster where developers will be using them
+apps in both dev and prod environments
 
-ACM is being used as a way of deploying:\
-triggers and pipelines to any cluster where developers will be using them\
-apps in both dev and prod environments\
-
-GitHub is used as the code repo environment:\
+GitHub is used as the code repo environment:
 some repositories have been used for ACM to deploy 
 
-The use case is the following\
-A developer logs into a service-portal to request an environment to deploy their app\
-This triggers the first pipelineRun - called initial-app-setup-pipelineRun\
-This pipeline does the following:\
-**Task1:** create a dev-git-repo (this is where the developer will deploy and test to the dev cluster)\
-**Task2:** create a prod-git-repo (this is where the code will deployed when it passes successfully tests and it will get deployed onto the Prod environment)\
-**Task3:** create an eventListener (this eventListener will be used to trigger the second pipeline when the developer modifies code within the dev-git-repo)\
-**Task4:** create a webhook in the dev-git-repo (this webhook will notify the eventListener every time there is a change within the dev-git-repo)\
-**Task5:** links the dev-git-repo to the dev environment via ACM \
-**Task6:** links the prod-git-repo to the prod environment via ACM \
+The use case is the following:
+   - A developer logs into a service-portal to request an environment to deploy their app
+   - This triggers the first pipelineRun - called initial-app-setup-pipelineRun
 
 ## PipelineRun - initial-app-setup-pipelineRun
 
 This pipelineRun is used when a developer wants to request an environment to deploy their app.
+
+It does the following:
+   - **Task1:** create a dev-git-repo (this is where the developer will deploy and test to the dev cluster)
+   - **Task2:** create a prod-git-repo (this is where the code will deployed when it passes successfully tests and it will get deployed onto the Prod environment)
+   - **Task3:** create an eventListener (this eventListener will be used to trigger the second pipeline when the developer modifies code within the dev-git-repo)
+   - **Task4:** create a webhook in the dev-git-repo (this webhook will notify the eventListener every time there is a change within the dev-git-repo)
+   - **Task5:** links the dev-git-repo to the dev environment via ACM
+   - **Task6:** links the prod-git-repo to the prod environment via ACM 
+
+
 
 ### Task1 - Create a dev-git-repo
 For this task, as usual, I did it the ugly way by running a script and using the GitHub API for creating a repo.\
