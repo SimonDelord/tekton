@@ -15,7 +15,7 @@ GitHub is used as the code repo environment:\
 some repositories have been used for ACM to deploy 
 
 The use case is the following\
-A developer logs into a service-portal to request an environment to deploy his app\
+A developer logs into a service-portal to request an environment to deploy their app\
 This triggers the first pipelineRun - called initial-app-setup-pipelineRun\
 This pipeline does the following:\
 **Task1:** create a dev-git-repo (this is where the developer will deploy and test to the dev cluster)\
@@ -25,6 +25,9 @@ This pipeline does the following:\
 **Task5:** links the dev-git-repo to the dev environment via ACM \
 **Task6:** links the prod-git-repo to the prod environment via ACM \
 
+## PipelineRun - initial-app-setup-pipelineRun
+
+This pipelineRun is used when a developer wants to request an environment to deploy their app.
 
 ### Task1 - Create a dev-git-repo
 For this task, as usual, I did it the ugly way by running a script and using the GitHub API for creating a repo.\
@@ -47,5 +50,14 @@ The eventListener is imported from a pre-defined template located in folder oc-f
 The eventListener relies on a simple combination of triggerTemplate and triggerBinding that are available in the Trigger folder and available on the hub-cluster via ACM.\
 
 ### Task4 - Create a webhook in the dev-git-repo
+
+In this task, I use something similar to tasks 1 and 2 and use the GitHub API for calling a webhook. Because of the naming structure of the eventListener (route) I simply hardcoded it in the script part of the task, but obviously this could/should be used as an input for the webhook creation.
+
+### Tasks 5 & 6 - Link the dev-git and prod-git-repo to OCP clusters via ACM
+
+I use a similar approach as for step 3, relying on openshift-client Task. The ACM resource files (Application, Channel, Placement-Rule and Subscription) are compiled into a single YAML file located in the folder oc-files (acm-dev-git-repo-import.yaml for the dev environment and acm-prod-git-repo-import.yaml for the prod environmnent).
+
+
+### PipelineRun - Test and Promote to Production 
 
 
