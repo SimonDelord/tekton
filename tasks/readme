@@ -1,2 +1,5 @@
 Those YAML files are the various Tasks that get imported into the OCP cluster 
 via ACM (e.g using ACM as a tool to provide access to developers to various Tekton components)
+
+One task that is not here is the openshift-client Task that can be retrieved from 
+https://github.com/tektoncd/catalog/tree/master/task/openshift-client/0.1
