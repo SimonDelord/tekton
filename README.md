@@ -69,7 +69,7 @@ In this task, I use something similar to tasks 1 and 2 and use the GitHub API fo
 I use a similar approach as for step 3, relying on openshift-client Task. The ACM resource files (Application, Channel, Placement-Rule and Subscription) are compiled into a single YAML file located in the folder oc-files (acm-dev-git-repo-import.yaml for the dev environment and acm-prod-git-repo-import.yaml for the prod environmnent).
 
 
-### PipelineRun - Test and Copy Git Repo Pipeline
+## PipelineRun - Test and Copy Git Repo Pipeline
 
 This pipelineRun is used when a developer wants to commit software to Dev / Production.
 
