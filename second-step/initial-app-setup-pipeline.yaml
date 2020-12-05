@@ -1,0 +1,92 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: initial-app-setup-pipeline
+spec:
+  params:
+#  - name: git-source-repo 
+#  - name: git-dest-repo 
+#  - name: script-dev-to-prod 
+  workspaces:
+#  - name: source 
+#  - name: input  
+  tasks:
+  - name: create-a-dev-git-repo
+    taskRef: 
+      name: create-a-dev-git-repo
+      kind: Task
+
+  - name: create-a-prod-git-repo
+    taskRef:
+      name: create-a-prod-git-repo
+      kind: Task
+    runAfter: 
+      - create-a-dev-git-repo
+
+  - name: create-an-event-listener
+    taskRef:
+      name: openshift-client
+      kind: Task
+    params:
+    - name: ARGS
+      value:
+        - "apply"
+        - "-f"
+        - "https://raw.githubusercontent.com/simonDelordtest/oc-files/master/event-listener-dev-app1.yaml"
+    runAfter:
+      - create-a-prod-git-repo
+
+  - name: create-a-webhook-git-dev-repo
+    taskRef: 
+      name: create-a-webhook-git-dev-repo
+      kind: Task
+    runAfter:
+      - create-an-event-listener
+
+  - name: link-the-dev-git-repo-to-acm
+    taskRef: 
+      name: openshift-client
+      kind: Task
+    params:
+    - name: ARGS
+      value: 
+        - "apply"
+        - "-f"
+        - "https://raw.githubusercontent.com/simonDelordtest/oc-files/master/acm-dev-git-repo-import.yaml"
+    runAfter:
+      - create-a-webhook-git-dev-repo
+
+  - name: link-the-prod-git-repo-to-acm
+    taskRef:
+      name: openshift-client
+      kind: Task
+    params:
+    - name: ARGS
+      value: 
+        - "apply"
+        - "-f"
+        - "https://raw.githubusercontent.com/simonDelordtest/oc-files/master/acm-prod-git-repo-import.yaml"
+    runAfter:
+      - link-the-dev-git-repo-to-acm 
+#
+#      name: 
+#  - name: copy-files-from-git-source-repo-to-git-dest-repo
+#    taskRef:
+#      name: git-cli
+#      kind: ClusterTask
+#    workspaces:
+#      - name: source 
+#        workspace: source  
+#      - name: input 
+#        workspace: input
+#
+#    params: 
+#    - name: GIT_SCRIPT
+#      value: |
+#        git init
+#        git remote add origin https://github.com/simonDelordtest/dev-cluster.git
+#        git pull origin master
+#        git remote remove origin
+#        git remote add origin https://github.com/simonDelordtest/prod-cluster.git
+#        git push https://simonDelordtest:simondelord1@github.com/simonDelordtest/prod-cluster.git
