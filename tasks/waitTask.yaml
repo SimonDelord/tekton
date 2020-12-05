@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: wait
+spec:
+  steps:
+    - name: echo
+      image: fedora
+      script: |
+        #!/usr/bin/env bash
+        echo "waiting for 10 seconds"
+        sleep 10
