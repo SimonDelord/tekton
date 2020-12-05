@@ -1,0 +1,56 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: test-and-copy-git-repo-pipeline
+spec:
+  params:
+#  - name: git-source-repo 
+#  - name: git-dest-repo 
+#  - name: script-dev-to-prod 
+  workspaces:
+  - name: source 
+  - name: input  
+
+  tasks:
+
+  - name: wait-for-acm-to-deploy-on-the-dev-cluster
+    taskRef:
+      name: wait
+      kind: Task
+
+  - name: run-first-test
+    taskRef:
+      name: test 
+      kind: Task
+    runAfter:
+      - wait-for-acm-to-deploy-on-the-dev-cluster
+
+  - name: run-second-test
+    taskRef:
+      name: test 
+      kind: Task
+    runAfter: 
+      - run-first-test
+      
+  - name: copy-files-from-git-source-repo-to-git-dest-repo
+    taskRef:
+      name: git-cli
+      kind: ClusterTask
+    runAfter:
+      - run-second-test
+    workspaces:
+      - name: source 
+        workspace: source  
+      - name: input 
+        workspace: input
+
+    params: 
+    - name: GIT_SCRIPT
+      value: |
+        git init
+        git remote add origin https://github.com/simonDelordtest/dev-repo-app1.git
+        git pull origin master
+        git remote remove origin
+        git remote add origin https://github.com/simonDelordtest/prod-repo-app1.git 
+        git push https://simonDelordtest:simondelord1@github.com/simonDelordtest/prod-repo-app1.git master
