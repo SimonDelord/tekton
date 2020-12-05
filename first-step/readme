@@ -1,0 +1,3 @@
+This is the First Step of the Demo - an infra/DevOps person creates various Tekton tasks, pipelines and trigger components
+and uploads them into a GitHub repo. 
+All these tasks are then imported to the relevant OCP clusters via ACM
