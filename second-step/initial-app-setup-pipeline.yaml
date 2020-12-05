@@ -69,24 +69,4 @@ spec:
         - "https://raw.githubusercontent.com/simonDelordtest/oc-files/master/acm-prod-git-repo-import.yaml"
     runAfter:
       - link-the-dev-git-repo-to-acm 
-#
-#      name: 
-#  - name: copy-files-from-git-source-repo-to-git-dest-repo
-#    taskRef:
-#      name: git-cli
-#      kind: ClusterTask
-#    workspaces:
-#      - name: source 
-#        workspace: source  
-#      - name: input 
-#        workspace: input
-#
-#    params: 
-#    - name: GIT_SCRIPT
-#      value: |
-#        git init
-#        git remote add origin https://github.com/simonDelordtest/dev-cluster.git
-#        git pull origin master
-#        git remote remove origin
-#        git remote add origin https://github.com/simonDelordtest/prod-cluster.git
-#        git push https://simonDelordtest:simondelord1@github.com/simonDelordtest/prod-cluster.git
+
