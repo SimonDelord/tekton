@@ -1,21 +1,30 @@
 # Introduction
 This is my github repo for all Tekton related activities.\
-I am going to try to integrate some of the ACM functions with Tekton and see how they can be used together.\
+I am going to try to integrate some of the ACM functions with Tekton and see how they can be used together.
 
 The environment is the following:
    - one OCP cluster used as a Hub/Dev environment.
    - one OCP cluster used as a Prod environment.
 
 ACM is being used as a way of deploying:
-triggers and pipelines to any cluster where developers will be using them
+   - triggers and pipelines to any cluster where developers will be using them
 apps in both dev and prod environments
 
 GitHub is used as the code repo environment:
-some repositories have been used for ACM to deploy 
+   - some repositories have been used for ACM to deploy 
 
-The use case is the following:
-   - A developer logs into a service-portal to request an environment to deploy their app
-   - This triggers the first pipelineRun - called initial-app-setup-pipelineRun
+The use case is the following (3 steps demo):
+   - **First Step** An infra/devops person creates various Tekton Tasks, Pipelines, Trigger components (TriggerTemplates, TriggerBindings) and uploads them into a GitHub repo. All these Tekton "capabilities" are then imported to the relevant OCP clusters via ACM.
+   - **Second Step - First pipeline** A developer then sends a request (either via logging into a service-portal or by starting a specific Tekton pipeline) to request an environment to deploy their app. This triggers a Tekton pipeline (called the initial-app-setup-pipeline) that:
+         - Creates various Git Repos for the developer (dev and prod)
+         - Creates various webhooks in the Git Repos and EventListeners on the OCP clusters
+         - Subscribes ACM to the Git Repos (e.g mapping the Dev Git Repo to the Dev OCP cluster and the Prod Git Repo to the Prod OCP cluster)         
+   - **Third Step - Second pipeline** The developer then uploads their app intot the Git Hub dev-repo. This triggers:
+         - ACM to deploy the application onto the Dev OCP cluster
+         - A Tekton pipeline (via the webhook created in step 2) that:
+              - runs some test(s) on the Repo/Files (e.g the K8 YAML files describing the app)
+              - based on the success for the test(s), pushes those files to the Prod Git Repo.
+         - ACM then deploys the application into the Production environment once Tekton has finished uploading the files onto the Prod Git Repo. 
 
 ## PipelineRun - initial-app-setup-pipelineRun
 
@@ -60,6 +69,25 @@ In this task, I use something similar to tasks 1 and 2 and use the GitHub API fo
 I use a similar approach as for step 3, relying on openshift-client Task. The ACM resource files (Application, Channel, Placement-Rule and Subscription) are compiled into a single YAML file located in the folder oc-files (acm-dev-git-repo-import.yaml for the dev environment and acm-prod-git-repo-import.yaml for the prod environmnent).
 
 
-### PipelineRun - Test and Promote to Production 
+### PipelineRun - Test and Copy Git Repo Pipeline
+
+This pipelineRun is used when a developer wants to commit software to Dev / Production.
+
+It does the following:
+   - **Task1:** wait for ACM to deploy on the Dev Cluster 
+   - **Task2:** Run a first test against the content in Dev-repo 
+   - **Task3:** Run a second test against the content in Dev-repo
+   - **Task4:** Copy files from the git Dev-repo to the git Prod-repo
+ 
+ ### Task1 - wait for ACM to deploy on the Dev Cluster
+For this task, as usual, I simply ran a Task called wait (waitTask.yaml in the Pipelines folder) that waits for 10 seconds.
+
+ ### Tasks 2 & 3 - Run a test on the Dev Cluster
+For this task, as usual, I simply ran a Task called test (testTask.yaml in the Pipelines folder) that waits for 10 seconds and returns a "test successful" message. Ideally, I'd run some real tests against either Dev cluster app that's been spun up &/or the Dev-repo to check the validity of the code. Maybe another time ;-)
+
+### Task 4 - Copy files from the git Dev-repo to the git Prod-repo
+
+For this task I use the git-cli (https://raw.githubusercontent.com/tektoncd/catalog/master/task/git-cli/0.1/git-cli.yaml).
+Again, I did hardcode the user:password for GitHub in the git push https:// command and in a proper environment it would need to be done properly (for another time maybe). 
 
 
