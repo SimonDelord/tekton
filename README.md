@@ -21,14 +21,19 @@ The use case is the following (3 steps demo):
    - **Second Step - First pipeline** A developer then sends a request (either via logging into a service-portal or by starting a specific Tekton pipeline) to request an environment to deploy their app. This triggers a Tekton pipeline (called the initial-app-setup-pipeline) that:
          - Creates various Git Repos for the developer (dev and prod)
          - Creates various webhooks in the Git Repos and EventListeners on the OCP clusters
-         - Subscribes ACM to the Git Repos (e.g mapping the Dev Git Repo to the Dev OCP cluster and the Prod Git Repo to the Prod OCP cluster)         
+         - Subscribes ACM to the Git Repos (e.g mapping the Dev Git Repo to the Dev OCP cluster and the Prod Git Repo to the Prod OCP cluster)  
+         
+ ![alt text](https://github.com/SimonDelord/tekton/blob/main/images/Step-2.png)    
+ 
    - **Third Step - Second pipeline** The developer then uploads their app intot the Git Hub dev-repo. This triggers:
          - ACM to deploy the application onto the Dev OCP cluster
          - A Tekton pipeline (via the webhook created in step 2) that:
               - runs some test(s) on the Repo/Files (e.g the K8 YAML files describing the app)
               - based on the success for the test(s), pushes those files to the Prod Git Repo.
          - ACM then deploys the application into the Production environment once Tekton has finished uploading the files onto the Prod Git Repo. 
-
+         
+ ![alt text](https://github.com/SimonDelord/tekton/blob/main/images/Step-3.png)
+ 
 ## PipelineRun - initial-app-setup-pipelineRun
 
 This pipelineRun is used when a developer wants to request an environment to deploy their app.
