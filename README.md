@@ -15,6 +15,9 @@ GitHub is used as the code repo environment:
 
 The use case is the following (3 steps demo):
    - **First Step** An infra/devops person creates various Tekton Tasks, Pipelines, Trigger components (TriggerTemplates, TriggerBindings) and uploads them into a GitHub repo. All these Tekton "capabilities" are then imported to the relevant OCP clusters via ACM.
+   
+   ![alt text](https://github.com/SimonDelord/tekton/blob/main/images/Step-1.png)
+   
    - **Second Step - First pipeline** A developer then sends a request (either via logging into a service-portal or by starting a specific Tekton pipeline) to request an environment to deploy their app. This triggers a Tekton pipeline (called the initial-app-setup-pipeline) that:
          - Creates various Git Repos for the developer (dev and prod)
          - Creates various webhooks in the Git Repos and EventListeners on the OCP clusters
